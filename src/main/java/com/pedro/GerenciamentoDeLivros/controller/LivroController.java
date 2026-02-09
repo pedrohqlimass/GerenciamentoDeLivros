@@ -1,10 +1,20 @@
 package com.pedro.GerenciamentoDeLivros.controller;
 
+import com.pedro.GerenciamentoDeLivros.model.LivroModel;
+import com.pedro.GerenciamentoDeLivros.service.LivroService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/livros")
 public class LivroController {
+
+    private LivroService service;
+
+    public LivroController(LivroService service) {
+        this.service = service;
+    }
 
     @PostMapping("/inserir")
     public String inserir() {
@@ -12,13 +22,13 @@ public class LivroController {
     }
 
     @GetMapping("/listar")
-    public String listarLivros() {
-        return "listados";
+    public List<LivroModel> listarLivros() {
+        return service.listarLivros();
     }
 
     @GetMapping("/listar/{id}")
-    public String listarLivroId() {
-        return "listado por id";
+    public LivroModel listarLivroId(@PathVariable Long id) {
+        return service.listarLivroId(id);
     }
 
     @PutMapping("/atualizar/{id}")
