@@ -16,11 +16,13 @@ import java.util.UUID;
 public class LivroModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String titulo;
     private String autor;
+
+    @Column(unique = true)
     private String codigo;
 
     @Column(nullable = false, unique = false)
@@ -30,11 +32,12 @@ public class LivroModel {
     private LocalDate dataPublicacao;
 
     @PrePersist
-    public void gerarCodigo() {
-        this.codigo = "LIV-" + UUID.randomUUID()
-                .toString()
-                .substring(0,8)
-                .toUpperCase();
+    public void prePersist() {
+        if (this.codigo == null) {
+            this.codigo = "LIV-" + UUID.randomUUID()
+                    .toString()
+                    .substring(0, 8)
+                    .toUpperCase();
+        }
     }
-
 }
