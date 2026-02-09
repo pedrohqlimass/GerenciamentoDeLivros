@@ -17,7 +17,7 @@ public class LivroController {
     }
 
     @GetMapping("/listar/{id}")
-    public String listarLivrosId() {
+    public String listarLivroId() {
         return "listado por id";
     }
 
