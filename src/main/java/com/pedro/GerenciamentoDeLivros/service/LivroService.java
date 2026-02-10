@@ -24,4 +24,12 @@ public class LivroService {
         Optional<LivroModel> livro = repository.findById(id);
         return livro.orElse(null);
     }
+
+    public LivroModel atualizarLivro(Long id, LivroModel livroAtualizado) {
+        if (repository.existsById(id)) {
+            livroAtualizado.setId(id);
+            return repository.save(livroAtualizado);
+        }
+        return null;
+    }
 }

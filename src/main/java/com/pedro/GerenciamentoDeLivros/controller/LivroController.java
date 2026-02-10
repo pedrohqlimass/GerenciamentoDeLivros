@@ -32,8 +32,8 @@ public class LivroController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public String atualizarLivro() {
-        return "atualizado";
+    public LivroModel atualizarLivro(@PathVariable Long id, @RequestBody LivroModel livroAtualizado) {
+        return service.atualizarLivro(id, livroAtualizado);
     }
 
     @DeleteMapping("/deletar/{id}")
