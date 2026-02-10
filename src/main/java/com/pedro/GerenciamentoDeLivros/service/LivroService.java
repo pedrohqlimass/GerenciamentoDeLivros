@@ -32,4 +32,8 @@ public class LivroService {
         }
         return null;
     }
+
+    public void deletarLivro(Long id) {
+        repository.deleteById(id);
+    }
 }
