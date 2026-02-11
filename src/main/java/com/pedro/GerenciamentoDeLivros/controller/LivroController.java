@@ -19,8 +19,12 @@ public class LivroController {
     }
 
     @PostMapping("/inserir")
-    public String inserir() {
-        return "inserir";
+    public ResponseEntity<String> inserirLivro(@RequestBody LivroModel model) {
+
+        LivroModel novoLivro = service.inserirLivro(model);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Livro inserido com sucesso no id: " + novoLivro.getId());
     }
 
     @GetMapping("/listar")

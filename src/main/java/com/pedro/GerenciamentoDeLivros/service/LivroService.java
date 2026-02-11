@@ -16,6 +16,10 @@ public class LivroService {
         this.repository = repository;
     }
 
+    public LivroModel inserirLivro(LivroModel model) {
+        return repository.save(model);
+    }
+
     public List<LivroModel> listarLivros() {
         return repository.findAll();
     }
