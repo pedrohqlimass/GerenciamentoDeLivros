@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_livros")
+@Table(name = "tb_livros", uniqueConstraints = @UniqueConstraint(name = "uk_tb_livros_isbn", columnNames = "isbn"))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
