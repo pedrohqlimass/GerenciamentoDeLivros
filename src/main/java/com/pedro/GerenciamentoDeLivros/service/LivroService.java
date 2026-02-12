@@ -1,40 +1,47 @@
 package com.pedro.GerenciamentoDeLivros.service;
 
+import com.pedro.GerenciamentoDeLivros.dto.LivroDTO;
+import com.pedro.GerenciamentoDeLivros.mapper.LivroMapper;
 import com.pedro.GerenciamentoDeLivros.model.LivroModel;
 import com.pedro.GerenciamentoDeLivros.repository.LivroRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LivroService {
 
     private LivroRepository repository;
+    private LivroMapper mapper;
 
-    public LivroService(LivroRepository repository) {
+    public LivroService(LivroRepository repository, LivroMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public LivroModel inserirLivro(LivroModel model) {
-        return repository.save(model);
+    public LivroDTO inserirLivro(LivroDTO dto) {
+        LivroModel model = mapper.toModel(dto);
+        return mapper.toDTO(repository.save(model));
     }
 
-    public List<LivroModel> listarLivros() {
-        return repository.findAll();
+    public List<LivroDTO> listarLivros() {
+        return mapper.toDTOList(repository.findAll());
     }
 
-    public LivroModel listarLivroId(Long id) {
-        Optional<LivroModel> livro = repository.findById(id);
-        return livro.orElse(null);
+    public LivroDTO listarLivroId(Long id) {
+        return repository.findById(id)
+                .map(mapper::toDTO)
+                .orElse(null);
     }
 
-    public LivroModel atualizarLivro(Long id, LivroModel livroAtualizado) {
-        if (repository.existsById(id)) {
-            livroAtualizado.setId(id);
-            return repository.save(livroAtualizado);
-        }
-        return null;
+    public LivroDTO atualizarLivro(Long id, LivroDTO dto) {
+        return repository.findById(id)
+                .map(livroExistente -> {
+                    LivroModel livroAtualizado = mapper.toModel(dto);
+                    livroAtualizado.setId(id);
+                    return mapper.toDTO(repository.save(livroAtualizado));
+                })
+                .orElse(null);
     }
 
     public void deletarLivro(Long id) {

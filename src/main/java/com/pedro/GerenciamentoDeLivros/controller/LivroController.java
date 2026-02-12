@@ -1,6 +1,6 @@
 package com.pedro.GerenciamentoDeLivros.controller;
 
-import com.pedro.GerenciamentoDeLivros.model.LivroModel;
+import com.pedro.GerenciamentoDeLivros.dto.LivroDTO;
 import com.pedro.GerenciamentoDeLivros.service.LivroService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +19,49 @@ public class LivroController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<String> inserirLivro(@RequestBody LivroModel model) {
+    public ResponseEntity<String> inserirLivro(@RequestBody LivroDTO model) {
 
-        LivroModel novoLivro = service.inserirLivro(model);
+        LivroDTO novoLivro = service.inserirLivro(model);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Livro inserido com sucesso no id: " + novoLivro.getId());
     }
 
     @GetMapping("/listar")
-    public List<LivroModel> listarLivros() {
-        return service.listarLivros();
+    public ResponseEntity<List<LivroDTO>> listarLivros() {
+
+        List<LivroDTO> dtos = service.listarLivros();
+
+        if (dtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/listar/{id}")
-    public LivroModel listarLivroId(@PathVariable Long id) {
-        return service.listarLivroId(id);
+    public ResponseEntity<?> listarLivroId(@PathVariable Long id) {
+
+        LivroDTO dto = service.listarLivroId(id);
+
+        if (dto != null) {
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Livro com o ID " + id + " não existe nos nossos resgistros.");
+        }
+
     }
 
     @PutMapping("/atualizar/{id}")
-    public LivroModel atualizarLivro(@PathVariable Long id, @RequestBody LivroModel livroAtualizado) {
-        return service.atualizarLivro(id, livroAtualizado);
+    public ResponseEntity<String> atualizarLivroPorId(@PathVariable Long id, @RequestBody LivroDTO livroAtualizado) {
+
+        if (service.listarLivroId(id) != null) {
+            service.atualizarLivro(id, livroAtualizado);
+            return ResponseEntity.ok("Livro de ID " + id + " foi alterado com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Livro com o ID " + id + " não existe nos nossos resgistros.");
+        }
     }
 
     @DeleteMapping("/deletar/{id}")
